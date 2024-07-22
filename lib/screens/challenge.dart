@@ -14,6 +14,7 @@ class ChallengeScreen extends StatefulWidget {
 class _ChallengeScreenState extends State<ChallengeScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  String selectedCategory = 'All';
 
   Future<void> _bookmarkChallenge(Map<String, dynamic> challenge) async {
     final user = _auth.currentUser;
@@ -55,7 +56,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
     final challenges = [
       {
         'name': 'Challenge 1',
-        'category': 'Forensic',
+        'category': 'Forensics',
         'points': 100,
       },
       {
@@ -79,6 +80,13 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
         'points': 200,
       },
     ];
+
+    // Filter challenges based on selected category
+    final filteredChallenges = selectedCategory == 'All'
+        ? challenges
+        : challenges
+            .where((challenge) => challenge['category'] == selectedCategory)
+            .toList();
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -120,6 +128,36 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                     fontSize: 24,
                   ),
                 ),
+                const SizedBox(height: 10),
+                // DropdownButton for category selection
+                DropdownButton<String>(
+                  value: selectedCategory,
+                  items: <String>[
+                    'All',
+                    'Cryptography',
+                    'Forensics',
+                    'Web Exploit',
+                    'Reverse Engineering',
+                    'Binary Exploit'
+                  ].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        style: GoogleFonts.dotGothic16(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  dropdownColor: Colors.black,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedCategory = newValue!;
+                    });
+                  },
+                ),
                 Expanded(
                   child: GridView.builder(
                     gridDelegate:
@@ -129,9 +167,9 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                       mainAxisSpacing: 10,
                       childAspectRatio: 1,
                     ),
-                    itemCount: challenges.length,
+                    itemCount: filteredChallenges.length,
                     itemBuilder: (context, index) {
-                      final challenge = challenges[index];
+                      final challenge = filteredChallenges[index];
                       return FutureBuilder<bool>(
                         future: _isBookmarked(challenge['name'] as String),
                         builder: (context, snapshot) {
