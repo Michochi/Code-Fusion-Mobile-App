@@ -210,17 +210,6 @@ where every challenge is a step closer to mastering the art of cybersecurity.'''
             image: AssetImage(imagePath),
             fit: BoxFit.cover,
           ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'Close',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
         );
       },
     );
