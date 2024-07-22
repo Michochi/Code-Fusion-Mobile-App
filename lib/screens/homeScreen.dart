@@ -28,7 +28,7 @@ class _HomescreenState extends State<Homescreen> {
               left: -500,
               top: -500,
               child: Opacity(
-                opacity: 0.2,
+                opacity: 0.3,
                 child: Image(
                   image: AssetImage('assets/Ellipse.png'),
                 ),
@@ -39,6 +39,16 @@ class _HomescreenState extends State<Homescreen> {
               top: 250,
               child: Opacity(
                 opacity: 0.2,
+                child: Image(
+                  image: AssetImage('assets/Ellipse.png'),
+                ),
+              ),
+            ),
+            const Positioned(
+              left: -500,
+              top: 800,
+              child: Opacity(
+                opacity: 0.5,
                 child: Image(
                   image: AssetImage('assets/Ellipse.png'),
                 ),
