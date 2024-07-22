@@ -29,9 +29,7 @@ class _LoginPageState extends State<LoginPage> {
     String? email = prefs.getString('email');
     String? password = prefs.getString('password');
 
-    if (email != null && password != null) {
-      await _login(email, password, autoLogin: true);
-    }
+    await _login(email!, password!, autoLogin: true);
   }
 
   Future<void> _saveLoginInfo(String email, String password) async {

@@ -75,6 +75,11 @@ flutter:
     - assets/quest.png
     - assets/hackaon.png
     - assets/categories.png
+    - assets/Binary.png
+    - assets/Cryptography.png
+    - assets/Forensics.png
+    - assets/Reverse.png
+    - assets/Web.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

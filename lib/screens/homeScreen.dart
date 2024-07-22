@@ -14,7 +14,6 @@ class _HomescreenState extends State<Homescreen> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
-    // Calculate image size based on screen width
     double imageWidth = screenWidth * 0.85;
     double imageWidth2 = screenWidth * 0.50;
     double imageHeight = imageWidth * (9 / 16);
@@ -69,12 +68,44 @@ class _HomescreenState extends State<Homescreen> {
                       isRepeatingAnimation: false,
                     ),
                   ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'CATEGORIES',
+                    style: GoogleFonts.roboto(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2.0),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 20),
+                  GridView.count(
+                    crossAxisCount: 3,
+                    shrinkWrap: true,
+                    mainAxisSpacing: 16.0,
+                    crossAxisSpacing: 16.0,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      buildCategoryContainer('assets/Cryptography.png',
+                          'CRYPTOGRAPHY', screenWidth),
+                      buildCategoryContainer('assets/Binary.png',
+                          'BINARY EXPLOITATION', screenWidth),
+                      buildCategoryContainer(
+                          'assets/Forensics.png', 'FORENSICS', screenWidth),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
                   Container(
-                    alignment: Alignment.centerLeft,
-                    margin: const EdgeInsets.all(50),
-                    child: Image(
-                      image: AssetImage('assets/categories.png'),
-                      width: imageWidth2,
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        buildCategoryContainer('assets/Reverse.png',
+                            'REVERSE ENGINEERING', screenWidth),
+                        const SizedBox(width: 16),
+                        buildCategoryContainer(
+                            'assets/Web.png', 'WEB EXPLOITATION', screenWidth),
+                      ],
                     ),
                   ),
                   Container(
@@ -106,10 +137,39 @@ where every challenge is a step closer to mastering the art of cybersecurity.'''
                   const SizedBox(height: 20),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget buildCategoryContainer(
+      String imagePath, String name, double screenWidth) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Image(
+          image: AssetImage(imagePath),
+          width: screenWidth / 6,
+          height: screenWidth / 6,
+        ),
+        const SizedBox(height: 8),
+        Text(
+          name,
+          style: GoogleFonts.dotGothic16(color: Colors.white, fontSize: 13),
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 8),
+        ElevatedButton(
+          onPressed: () {},
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF9C27B0),
+          ),
+          child: Text('Video',
+              style: GoogleFonts.inter(color: Colors.white, fontSize: 13)),
+        ),
+      ],
     );
   }
 }

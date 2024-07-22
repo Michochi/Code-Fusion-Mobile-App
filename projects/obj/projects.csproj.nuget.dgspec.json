@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Micho\\Documents\\flutter\\login_registration\\projects\\projects.csproj": {}
+    "D:\\Projects\\Code_Fusion\\Code-Fusion-Mobile-App\\projects\\projects.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Micho\\Documents\\flutter\\login_registration\\projects\\projects.csproj": {
+    "D:\\Projects\\Code_Fusion\\Code-Fusion-Mobile-App\\projects\\projects.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Micho\\Documents\\flutter\\login_registration\\projects\\projects.csproj",
+        "projectUniqueName": "D:\\Projects\\Code_Fusion\\Code-Fusion-Mobile-App\\projects\\projects.csproj",
         "projectName": "projects",
-        "projectPath": "C:\\Users\\Micho\\Documents\\flutter\\login_registration\\projects\\projects.csproj",
-        "packagesPath": "C:\\Users\\Micho\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Micho\\Documents\\flutter\\login_registration\\projects\\obj\\",
+        "projectPath": "D:\\Projects\\Code_Fusion\\Code-Fusion-Mobile-App\\projects\\projects.csproj",
+        "packagesPath": "C:\\Users\\leero\\.nuget\\packages\\",
+        "outputPath": "D:\\Projects\\Code_Fusion\\Code-Fusion-Mobile-App\\projects\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Micho\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\leero\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
