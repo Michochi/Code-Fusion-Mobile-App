@@ -17,6 +17,9 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
   int currentIndex = 1; // Default to HomeScreen
   int points = 100; // Example points value, you can update it as needed
 
+  final PageController _pageController =
+      PageController(initialPage: 1); // Initialize PageController
+
   final List<Widget> _screens = [
     const ChallengeScreen(), // Use ChallengeScreen
     const Homescreen(),
@@ -24,6 +27,11 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
   ];
 
   void _onItemTapped(int index) {
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
     setState(() {
       currentIndex = index;
     });
@@ -50,8 +58,8 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          leading: Padding(
-            padding: const EdgeInsets.all(9.0),
+          leading: const Padding(
+            padding: EdgeInsets.all(9.0),
             child: Image(image: AssetImage("assets/logocode.png")),
           ),
           backgroundColor: Color.fromARGB(25, 183, 0, 255),
@@ -90,7 +98,15 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
             ],
           ),
         ),
-        body: _screens[currentIndex],
+        body: PageView(
+          controller: _pageController,
+          children: _screens,
+          onPageChanged: (index) {
+            setState(() {
+              currentIndex = index;
+            });
+          },
+        ),
         bottomNavigationBar: Container(
           height: 40,
           color: Color.fromARGB(255, 153, 0, 255),
@@ -101,7 +117,9 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
                 icon: Icon(
                   Icons.developer_mode_outlined,
                   size: 25,
-                  color: currentIndex == 0 ? Color(0xFF9125DA) : Colors.black,
+                  color: currentIndex == 0
+                      ? Color.fromARGB(255, 255, 255, 255)
+                      : Colors.black,
                 ),
                 onPressed: () {
                   _onItemTapped(0);
@@ -112,7 +130,7 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
                   Icons.home,
                   size: 30,
                   color: currentIndex == 1
-                      ? const Color(0xFF9125DA)
+                      ? Color.fromARGB(255, 255, 255, 255)
                       : Colors.black,
                 ),
                 onPressed: () {
@@ -124,7 +142,7 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
                   Icons.person,
                   size: 25,
                   color: currentIndex == 2
-                      ? const Color(0xFF9125DA)
+                      ? Color.fromARGB(255, 255, 255, 255)
                       : Colors.black,
                 ),
                 onPressed: () {

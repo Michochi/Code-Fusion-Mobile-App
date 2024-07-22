@@ -88,12 +88,12 @@ class _HomescreenState extends State<Homescreen> {
                         letterSpacing: 2.0),
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 15),
                   GridView.count(
-                    crossAxisCount: 3,
+                    crossAxisCount: 2,
                     shrinkWrap: true,
-                    mainAxisSpacing: 16.0,
-                    crossAxisSpacing: 16.0,
+                    mainAxisSpacing: 10.0,
+                    crossAxisSpacing: 10.0,
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
                       buildCategoryContainer(
@@ -111,19 +111,18 @@ class _HomescreenState extends State<Homescreen> {
                           'FORENSICS',
                           screenWidth,
                           'assets/ForensicsFRAME.png'),
+                      buildCategoryContainer(
+                          'assets/Reverse.png',
+                          'REVERSE ENGINEERING',
+                          screenWidth,
+                          'assets/ReverseFrame.png'),
                     ],
                   ),
-                  const SizedBox(height: 20),
                   Container(
                     margin: const EdgeInsets.symmetric(horizontal: 16),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        buildCategoryContainer(
-                            'assets/Reverse.png',
-                            'REVERSE ENGINEERING',
-                            screenWidth,
-                            'assets/ReverseFrame.png'),
                         const SizedBox(width: 16),
                         buildCategoryContainer(
                             'assets/Web.png',
@@ -138,7 +137,7 @@ class _HomescreenState extends State<Homescreen> {
                     margin: const EdgeInsets.all(50),
                     child: Image(
                       image: AssetImage('assets/quest.png'),
-                      width: imageWidth2,
+                      width: imageWidth2 + 30,
                     ),
                   ),
                   Container(

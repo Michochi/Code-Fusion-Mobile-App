@@ -42,6 +42,7 @@ dependencies:
   google_fonts: ^6.2.1
   animated_text_kit: ^4.2.2
   animated_glitch: ^2.0.0+2
+  cloud_firestore: ^5.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

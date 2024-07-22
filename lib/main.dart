@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:login_registration/screens/screen.dart';
 import 'firebase_options.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,11 +19,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/',
       routes: {
-        '/': (context) => const MainBodyScreen(),
+        '/': (context) => const LoginPage(),
         '/signin': (context) => const MyRegistration(),
         '/profile': (context) => const MyProfile(),
         '/home': (context) => const Homescreen(),
-        '/challenge': (context) => ChallengeScreen(),
+        '/challenge': (context) => const ChallengeScreen(),
       },
       title: 'Login And Registration',
       theme: ThemeData(
