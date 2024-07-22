@@ -18,7 +18,7 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
   int points = 100; // Example points value, you can update it as needed
 
   final List<Widget> _screens = [
-    const Challenge(),
+    const ChallengeScreen(), // Use ChallengeScreen
     const Homescreen(),
     const MyProfile(),
   ];
@@ -54,7 +54,7 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
             padding: const EdgeInsets.all(9.0),
             child: Image(image: AssetImage("assets/logocode.png")),
           ),
-          backgroundColor: Color.fromARGB(24, 75, 0, 105),
+          backgroundColor: Color.fromARGB(25, 183, 0, 255),
           elevation: 0,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,7 +93,7 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
         body: _screens[currentIndex],
         bottomNavigationBar: Container(
           height: 40,
-          color: Colors.white,
+          color: Color.fromARGB(255, 153, 0, 255),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [

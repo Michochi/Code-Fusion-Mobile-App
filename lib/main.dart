@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         '/signin': (context) => const MyRegistration(),
         '/profile': (context) => const MyProfile(),
         '/home': (context) => const Homescreen(),
-        '/challenge': (context) => const Challenge(),
+        '/challenge': (context) => ChallengeScreen(),
       },
       title: 'Login And Registration',
       theme: ThemeData(
