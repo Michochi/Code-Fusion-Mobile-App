@@ -40,12 +40,12 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     // Calculate image size based on screen width
-    double imageWidth = screenWidth * 0.95; // 80% of screen width
+    double imageWidth = screenWidth * 0.95; // 95% of screen width
     double imageHeight = imageWidth * (9 / 16);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light.copyWith(
-        statusBarColor: Color.fromARGB(25, 183, 0, 255),
+        statusBarColor: Color.fromARGB(50, 183, 0, 255),
       ),
       child: Scaffold(
         extendBodyBehindAppBar: true,
@@ -54,7 +54,7 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
             padding: const EdgeInsets.all(9.0),
             child: Image(image: AssetImage("assets/logocode.png")),
           ),
-          backgroundColor: const Color.fromARGB(25, 183, 0, 255),
+          backgroundColor: Color.fromARGB(24, 75, 0, 105),
           elevation: 0,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -62,8 +62,20 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
               const SizedBox(width: 40), // Placeholder for centering
               Text(
                 'POINTS: $points',
-                style:
-                    GoogleFonts.dotGothic16(color: Colors.white, fontSize: 18),
+                style: GoogleFonts.dotGothic16(
+                  color: Colors.white,
+                  fontSize: 18,
+                  shadows: [
+                    Shadow(
+                      offset: const Offset(1.0, 1.0),
+                      color: Colors.black.withOpacity(1),
+                    ),
+                    Shadow(
+                      offset: const Offset(-1.0, -1.0),
+                      color: Colors.black.withOpacity(1),
+                    ),
+                  ],
+                ),
                 textAlign: TextAlign.center,
               ),
               ElevatedButton(

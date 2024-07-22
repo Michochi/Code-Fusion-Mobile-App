@@ -96,12 +96,21 @@ class _HomescreenState extends State<Homescreen> {
                     crossAxisSpacing: 16.0,
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
-                      buildCategoryContainer('assets/Cryptography.png',
-                          'CRYPTOGRAPHY', screenWidth),
-                      buildCategoryContainer('assets/Binary.png',
-                          'BINARY EXPLOITATION', screenWidth),
                       buildCategoryContainer(
-                          'assets/Forensics.png', 'FORENSICS', screenWidth),
+                          'assets/Cryptography.png',
+                          'CRYPTOGRAPHY',
+                          screenWidth,
+                          'assets/CryptoFrame.png'),
+                      buildCategoryContainer(
+                          'assets/Binary.png',
+                          'BINARY EXPLOITATION',
+                          screenWidth,
+                          'assets/BinaryFrame.png'),
+                      buildCategoryContainer(
+                          'assets/Forensics.png',
+                          'FORENSICS',
+                          screenWidth,
+                          'assets/ForensicsFRAME.png'),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -110,11 +119,17 @@ class _HomescreenState extends State<Homescreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        buildCategoryContainer('assets/Reverse.png',
-                            'REVERSE ENGINEERING', screenWidth),
+                        buildCategoryContainer(
+                            'assets/Reverse.png',
+                            'REVERSE ENGINEERING',
+                            screenWidth,
+                            'assets/ReverseFrame.png'),
                         const SizedBox(width: 16),
                         buildCategoryContainer(
-                            'assets/Web.png', 'WEB EXPLOITATION', screenWidth),
+                            'assets/Web.png',
+                            'WEB EXPLOITATION',
+                            screenWidth,
+                            'assets/WebFrame.png'),
                       ],
                     ),
                   ),
@@ -122,7 +137,7 @@ class _HomescreenState extends State<Homescreen> {
                     alignment: Alignment.centerLeft,
                     margin: const EdgeInsets.all(50),
                     child: Image(
-                      image: const AssetImage('assets/quest.png'),
+                      image: AssetImage('assets/quest.png'),
                       width: imageWidth2,
                     ),
                   ),
@@ -155,7 +170,7 @@ where every challenge is a step closer to mastering the art of cybersecurity.'''
   }
 
   Widget buildCategoryContainer(
-      String imagePath, String name, double screenWidth) {
+      String imagePath, String name, double screenWidth, String fullImagePath) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -172,7 +187,9 @@ where every challenge is a step closer to mastering the art of cybersecurity.'''
         ),
         const SizedBox(height: 8),
         ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            _showImageDialog(context, fullImagePath);
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF9C27B0),
           ),
@@ -180,6 +197,33 @@ where every challenge is a step closer to mastering the art of cybersecurity.'''
               style: GoogleFonts.inter(color: Colors.white, fontSize: 13)),
         ),
       ],
+    );
+  }
+
+  void _showImageDialog(BuildContext context, String imagePath) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+          contentPadding: EdgeInsets.zero,
+          content: Image(
+            image: AssetImage(imagePath),
+            fit: BoxFit.cover,
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Close',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
