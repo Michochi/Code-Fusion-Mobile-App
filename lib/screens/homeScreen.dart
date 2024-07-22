@@ -122,7 +122,7 @@ class _HomescreenState extends State<Homescreen> {
                     alignment: Alignment.centerLeft,
                     margin: const EdgeInsets.all(50),
                     child: Image(
-                      image: AssetImage('assets/quest.png'),
+                      image: const AssetImage('assets/quest.png'),
                       width: imageWidth2,
                     ),
                   ),
@@ -176,7 +176,7 @@ where every challenge is a step closer to mastering the art of cybersecurity.'''
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFF9C27B0),
           ),
-          child: Text('Video',
+          child: Text('Info',
               style: GoogleFonts.inter(color: Colors.white, fontSize: 13)),
         ),
       ],
