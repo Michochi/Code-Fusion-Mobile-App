@@ -14,14 +14,13 @@ class MainBodyScreen extends StatefulWidget {
 
 class _MainBodyScreenState extends State<MainBodyScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  int currentIndex = 1; // Default to HomeScreen
-  int points = 100; // Example points value, you can update it as needed
+  int currentIndex = 1;
+  int points = 100;
 
-  final PageController _pageController =
-      PageController(initialPage: 1); // Initialize PageController
+  final PageController _pageController = PageController(initialPage: 1);
 
   final List<Widget> _screens = [
-    const ChallengeScreen(), // Use ChallengeScreen
+    const ChallengeScreen(),
     const Homescreen(),
     const MyProfile(),
   ];
@@ -47,8 +46,7 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
-    // Calculate image size based on screen width
-    double imageWidth = screenWidth * 0.95; // 95% of screen width
+    double imageWidth = screenWidth * 0.95;
     double imageHeight = imageWidth * (9 / 16);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -67,7 +65,7 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const SizedBox(width: 40), // Placeholder for centering
+              const SizedBox(width: 40),
               Text(
                 'POINTS: $points',
                 style: GoogleFonts.dotGothic16(

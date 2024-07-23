@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:login_registration/screens/screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -29,7 +30,9 @@ class _LoginPageState extends State<LoginPage> {
     String? email = prefs.getString('email');
     String? password = prefs.getString('password');
 
-    await _login(email!, password!, autoLogin: true);
+    if (email != null && password != null) {
+      await _login(email, password, autoLogin: true);
+    }
   }
 
   Future<void> _saveLoginInfo(String email, String password) async {
@@ -92,7 +95,180 @@ class _LoginPageState extends State<LoginPage> {
       );
     } catch (error) {
       errorMessage = error.toString();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage!),
+          duration: const Duration(seconds: 5),
+        ),
+      );
     }
+  }
+
+  Future<void> _showForgotPasswordDialog() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final TextEditingController emailController = TextEditingController();
+        final GlobalKey<FormState> key = GlobalKey<FormState>();
+
+        Future<void> _resetPassword(String email) async {
+          try {
+            await _authentication.sendPasswordResetEmail(email: email);
+
+            final Email emailMessage = Email(
+              body: 'Please click the link below to reset your password:\n\n'
+                  'Reset Link: [Reset Link]\n\n'
+                  'Thank you!',
+              subject: 'Password Reset Request',
+              recipients: [email],
+              attachmentPaths: ['assets/CodeFussion_Attachment.png'],
+            );
+
+            await FlutterEmailSender.send(emailMessage);
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Password reset email sent!"),
+                duration: Duration(seconds: 3),
+              ),
+            );
+            Future.delayed(const Duration(seconds: 2), () {
+              Navigator.pop(context);
+            });
+          } on FirebaseAuthException catch (error) {
+            String errorMessage = '';
+            switch (error.code) {
+              case 'user-not-found':
+                errorMessage = "User not found";
+                break;
+              case 'invalid-email':
+                errorMessage = "Invalid email";
+                break;
+              default:
+                errorMessage = "Error occurred";
+            }
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(errorMessage),
+                duration: const Duration(seconds: 5),
+              ),
+            );
+          } catch (error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(error.toString()),
+                duration: const Duration(seconds: 5),
+              ),
+            );
+          }
+        }
+
+        String? emailValidator(String? email) {
+          if (email == null || email.isEmpty) {
+            return 'Please enter your email';
+          } else if (!RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(email)) {
+            return 'Please enter a valid email';
+          }
+          return null;
+        }
+
+        return AlertDialog(
+          backgroundColor: Colors.transparent,
+          contentPadding: EdgeInsets.zero,
+          content: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/ForgotPasswordBG.png'),
+                      fit: BoxFit.fitWidth,
+                    ),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 356,
+                right: 10,
+                child: IconButton(
+                  icon: Icon(Icons.close, color: Colors.white),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+              Center(
+                child: Container(
+                  constraints: BoxConstraints(
+                    maxWidth: 400,
+                    maxHeight: 300,
+                  ),
+                  padding: const EdgeInsets.all(20),
+                  child: Form(
+                    key: key,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Forgot Password",
+                          style: GoogleFonts.dotGothic16(
+                            color: Colors.white,
+                            fontSize: 24,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: "Enter Email",
+                            labelStyle: TextStyle(
+                              color: Color.fromARGB(180, 255, 255, 255),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(25)),
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          controller: emailController,
+                          validator: emailValidator,
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            foregroundColor:
+                                MaterialStateProperty.all<Color>(Colors.white),
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                              const Color.fromARGB(255, 145, 37, 218),
+                            ),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4)),
+                              ),
+                            ),
+                          ),
+                          onPressed: () {
+                            if (key.currentState!.validate()) {
+                              final email = emailController.text;
+                              _resetPassword(email);
+                            }
+                          },
+                          child: const Text('Send Reset Code'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   String? emailValidator(String? email) {
@@ -121,10 +297,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-
-    // Calculate image size based on screen width
-    double imageWidth = screenWidth * 0.95; // 80% of screen width
-    double imageHeight = imageWidth * (9 / 16);
+    double imageWidth = screenWidth * 0.95;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -162,7 +335,7 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Image(
-                          image: AssetImage('assets/codewithfusion.png'),
+                          image: const AssetImage('assets/codewithfusion.png'),
                           width: imageWidth,
                           fit: BoxFit.fill,
                         ),
@@ -174,23 +347,24 @@ class _LoginPageState extends State<LoginPage> {
                       child: Text(
                         "Login",
                         style: GoogleFonts.dotGothic16(
-                            color: Colors.white, fontSize: 24),
+                          color: Colors.white,
+                          fontSize: 24,
+                        ),
                       ),
                     ),
                     Center(
                       child: Padding(
-                        padding: const EdgeInsets.all(30.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Form(
                           key: key,
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               TextFormField(
                                 decoration: const InputDecoration(
-                                  labelText: "Enter Email",
+                                  labelText: "Email",
                                   labelStyle: TextStyle(
-                                      color:
-                                          Color.fromARGB(180, 255, 255, 255)),
+                                    color: Color.fromARGB(180, 255, 255, 255),
+                                  ),
                                   border: OutlineInputBorder(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(25)),
@@ -201,46 +375,35 @@ class _LoginPageState extends State<LoginPage> {
                                 controller: emailController,
                                 validator: emailValidator,
                               ),
-                              const SizedBox(
-                                height: 10,
-                              ),
+                              const SizedBox(height: 20),
                               TextFormField(
                                 decoration: const InputDecoration(
-                                  labelText: "Enter Password",
+                                  labelText: "Password",
                                   labelStyle: TextStyle(
-                                      color:
-                                          Color.fromARGB(180, 255, 255, 255)),
+                                    color: Color.fromARGB(180, 255, 255, 255),
+                                  ),
                                   border: OutlineInputBorder(
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(25)),
                                     borderSide: BorderSide(color: Colors.white),
                                   ),
                                 ),
-                                controller: passwordController,
                                 obscureText: true,
+                                controller: passwordController,
                                 validator: passwordValidator,
                               ),
-                              const SizedBox(
-                                height: 20,
-                              ),
+                              const SizedBox(height: 20),
                               TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const MyRegistration()),
-                                  );
-                                },
-                                child: Text(
-                                  "Don't have an account? Sign up here!",
-                                  style: GoogleFonts.dotGothic16(
-                                      color: Colors.white),
+                                onPressed: _showForgotPasswordDialog,
+                                child: const Text(
+                                  'Forgot Password?',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    decoration: TextDecoration.underline,
+                                  ),
                                 ),
                               ),
-                              const SizedBox(
-                                height: 10,
-                              ),
+                              const SizedBox(height: 20),
                               ElevatedButton(
                                 style: ButtonStyle(
                                   foregroundColor:
@@ -248,7 +411,7 @@ class _LoginPageState extends State<LoginPage> {
                                           Colors.white),
                                   backgroundColor:
                                       MaterialStateProperty.all<Color>(
-                                    Color.fromARGB(255, 145, 37, 218),
+                                    const Color.fromARGB(255, 145, 37, 218),
                                   ),
                                   shape: MaterialStateProperty.all<
                                       RoundedRectangleBorder>(
@@ -267,6 +430,23 @@ class _LoginPageState extends State<LoginPage> {
                                 child: const Text('Login'),
                               ),
                               const SizedBox(height: 20),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const MyRegistration(),
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  "Don't have an account? Sign up here!",
+                                  style: GoogleFonts.dotGothic16(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),

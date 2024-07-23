@@ -28,7 +28,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
       } else {
         await querySnapshot.docs.first.reference.delete();
       }
-      setState(() {}); // Update UI to reflect bookmark status change
+      setState(() {});
     }
   }
 
@@ -48,11 +48,9 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
 
-    // Define the desired width and height of the image
-    double imageWidth = screenWidth * 0.9; // 90% of screen width
-    double imageHeight = imageWidth * (9 / 16); // Maintain aspect ratio of 16:9
+    double imageWidth = screenWidth * 0.9;
+    double imageHeight = imageWidth * (9 / 16);
 
-    // Sample challenge data
     final challenges = [
       {
         'name': 'Challenge 1',
@@ -81,7 +79,6 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
       },
     ];
 
-    // Filter challenges based on selected category
     final filteredChallenges = selectedCategory == 'All'
         ? challenges
         : challenges
@@ -129,7 +126,6 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                // DropdownButton for category selection
                 DropdownButton<String>(
                   value: selectedCategory,
                   items: <String>[
@@ -174,7 +170,8 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                         future: _isBookmarked(challenge['name'] as String),
                         builder: (context, snapshot) {
                           if (!snapshot.hasData) {
-                            return Center(child: CircularProgressIndicator());
+                            return const Center(
+                                child: CircularProgressIndicator());
                           }
                           final isBookmarked = snapshot.data!;
                           return GestureDetector(
@@ -200,7 +197,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                               width: imageWidth,
                               height: imageHeight,
                               decoration: BoxDecoration(
-                                image: DecorationImage(
+                                image: const DecorationImage(
                                   image: AssetImage(
                                       'assets/ChallengeBoxDesign.png'),
                                   fit: BoxFit.fitWidth,
@@ -219,7 +216,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
-                                  SizedBox(height: 10),
+                                  const SizedBox(height: 10),
                                   Text(
                                     challenge['category'] as String,
                                     style: GoogleFonts.dotGothic16(
@@ -228,7 +225,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
-                                  SizedBox(height: 10),
+                                  const SizedBox(height: 10),
                                   Text(
                                     '${challenge['points']} Points',
                                     style: GoogleFonts.dotGothic16(

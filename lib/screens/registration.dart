@@ -91,7 +91,7 @@ class _MyRegistrationState extends State<MyRegistration> {
             left: -500,
             top: -600,
             child: Opacity(
-              opacity: 0.2, // Change the opacity value here
+              opacity: 0.2,
               child: Image(
                 image: AssetImage('assets/Ellipse.png'),
               ),
@@ -101,7 +101,7 @@ class _MyRegistrationState extends State<MyRegistration> {
             left: 0,
             top: 250,
             child: Opacity(
-              opacity: 0.2, // Change the opacity value here
+              opacity: 0.2,
               child: Image(
                 image: AssetImage('assets/Ellipse.png'),
               ),

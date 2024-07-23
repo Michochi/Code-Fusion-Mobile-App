@@ -43,6 +43,7 @@ dependencies:
   animated_text_kit: ^4.2.2
   animated_glitch: ^2.0.0+2
   cloud_firestore: ^5.1.0
+  flutter_email_sender: ^6.0.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -88,6 +89,8 @@ flutter:
     - assets/ReverseFrame.png
     - assets/WebFrame.png
     - assets/ChallengeBoxDesign.png
+    - assets/ForgotPasswordBG.png
+    - assets/Message_Attachment.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
