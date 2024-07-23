@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:login_registration/screens/screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -95,12 +94,6 @@ class _LoginPageState extends State<LoginPage> {
       );
     } catch (error) {
       errorMessage = error.toString();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMessage!),
-          duration: const Duration(seconds: 5),
-        ),
-      );
     }
   }
 
@@ -110,22 +103,11 @@ class _LoginPageState extends State<LoginPage> {
       builder: (BuildContext context) {
         final TextEditingController emailController = TextEditingController();
         final GlobalKey<FormState> key = GlobalKey<FormState>();
+        String? errorMessage = '';
 
         Future<void> _resetPassword(String email) async {
           try {
             await _authentication.sendPasswordResetEmail(email: email);
-
-            final Email emailMessage = Email(
-              body: 'Please click the link below to reset your password:\n\n'
-                  'Reset Link: [Reset Link]\n\n'
-                  'Thank you!',
-              subject: 'Password Reset Request',
-              recipients: [email],
-              attachmentPaths: ['assets/CodeFussion_Attachment.png'],
-            );
-
-            await FlutterEmailSender.send(emailMessage);
-
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: Text("Password reset email sent!"),
@@ -136,7 +118,6 @@ class _LoginPageState extends State<LoginPage> {
               Navigator.pop(context);
             });
           } on FirebaseAuthException catch (error) {
-            String errorMessage = '';
             switch (error.code) {
               case 'user-not-found':
                 errorMessage = "User not found";
@@ -149,17 +130,12 @@ class _LoginPageState extends State<LoginPage> {
             }
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(errorMessage),
+                content: Text(errorMessage!),
                 duration: const Duration(seconds: 5),
               ),
             );
           } catch (error) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(error.toString()),
-                duration: const Duration(seconds: 5),
-              ),
-            );
+            errorMessage = error.toString();
           }
         }
 
@@ -190,7 +166,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               Positioned(
-                top: 356,
+                top: 357,
                 right: 10,
                 child: IconButton(
                   icon: Icon(Icons.close, color: Colors.white),
@@ -253,8 +229,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           onPressed: () {
                             if (key.currentState!.validate()) {
-                              final email = emailController.text;
-                              _resetPassword(email);
+                              _resetPassword(emailController.text);
                             }
                           },
                           child: const Text('Send Reset Code'),
