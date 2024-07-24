@@ -13,6 +13,26 @@ class MyProfile extends StatefulWidget {
 
 class _MyProfileState extends State<MyProfile> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  String? _username;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUsername();
+  }
+
+  Future<void> _loadUsername() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      setState(() {
+        _username = userDoc['username'];
+      });
+    }
+  }
 
   Future<void> _clearLoginInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -73,6 +93,23 @@ class _MyProfileState extends State<MyProfile> {
           ),
           Column(
             children: [
+              Container(
+                margin: const EdgeInsets.only(top: 50),
+                child: Text(
+                  'Hello, ${_username ?? 'User'}!',
+                  style: GoogleFonts.dotGothic16(
+                    color: Colors.white,
+                    fontSize: 24,
+                  ),
+                ),
+              ),
+              Text(
+                'Your bookmarks:',
+                style: GoogleFonts.dotGothic16(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
               Expanded(
                 child: FutureBuilder<List<Map<String, dynamic>>>(
                   future: _getBookmarks(),

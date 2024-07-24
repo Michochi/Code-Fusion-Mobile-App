@@ -37,7 +37,7 @@ class _SolveScreenState extends State<SolveScreen> {
     }
   }
 
-  void _checkFlag() async {
+  Future<void> _checkFlag() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       final challengeData =
@@ -45,45 +45,50 @@ class _SolveScreenState extends State<SolveScreen> {
       final flag = _flagController.text;
 
       if (challengeData != null) {
-        final challengeQuery = FirebaseFirestore.instance
-            .collection('challenges')
-            .where('name', isEqualTo: challengeData['name']);
-        final challengeSnapshot = await challengeQuery.get();
+        try {
+          final challengeQuery = FirebaseFirestore.instance
+              .collection('challenges')
+              .where('name', isEqualTo: challengeData['name']);
+          final challengeSnapshot = await challengeQuery.get();
 
-        if (challengeSnapshot.docs.isNotEmpty) {
-          final challengeDoc = challengeSnapshot.docs.first;
-          final data = challengeDoc.data();
-          final correctFlag = data['flag'] as String?;
-          final points = data['points'] as int?;
+          if (challengeSnapshot.docs.isNotEmpty) {
+            final challengeDoc = challengeSnapshot.docs.first;
+            final data = challengeDoc.data();
+            final correctFlag = data['flag'] as String?;
+            final points = data['points'] as int?;
 
-          if (correctFlag != null && points != null) {
-            final userRef =
-                FirebaseFirestore.instance.collection('users').doc(user.uid);
-            final completedChallengesRef =
-                userRef.collection('completedChallenges');
-            final completedChallengeDoc =
-                await completedChallengesRef.doc(challengeData['name']).get();
+            if (correctFlag != null && points != null) {
+              final userRef =
+                  FirebaseFirestore.instance.collection('users').doc(user.uid);
+              final completedChallengesRef =
+                  userRef.collection('completedChallenges');
+              final completedChallengeDoc =
+                  await completedChallengesRef.doc(challengeData['name']).get();
 
-            if (completedChallengeDoc.exists) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Challenge already completed!')));
-            } else if (flag == correctFlag) {
-              await _completeChallenge(points);
-              await _markChallengeAsCompleted(challengeData['name']);
-              ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Challenge completed!')));
-              Navigator.pop(context);
+              if (completedChallengeDoc.exists) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Challenge already completed!')));
+              } else if (flag == correctFlag) {
+                await _completeChallenge(points);
+                await _markChallengeAsCompleted(challengeData['name']);
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Challenge completed!')));
+                Navigator.pop(context);
+              } else {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text('Incorrect flag!')));
+              }
             } else {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text('Incorrect flag!')));
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Challenge data is incomplete!')));
             }
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Challenge data is incomplete!')));
+                SnackBar(content: Text('Challenge data not found!')));
           }
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Challenge data not found!')));
+        } catch (e) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('An error occurred: $e')));
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -193,11 +198,7 @@ class _SolveScreenState extends State<SolveScreen> {
                   ),
                 ),
               ),
-              onPressed: () async {
-                _checkFlag();
-                await _completeChallenge(points);
-                Navigator.pop(context);
-              },
+              onPressed: _checkFlag,
               child: Text(
                 'Send',
                 style: GoogleFonts.dotGothic16(),
