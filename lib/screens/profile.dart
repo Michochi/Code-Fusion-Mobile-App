@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyProfile extends StatefulWidget {
@@ -81,7 +82,13 @@ class _MyProfileState extends State<MyProfile> {
                     } else if (snapshot.hasError) {
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(child: Text('No bookmarks found.'));
+                      return Center(
+                          child: Text(
+                        'No bookmarks found.',
+                        style: GoogleFonts.dotGothic16(
+                          color: Colors.white,
+                        ),
+                      ));
                     }
 
                     final bookmarks = snapshot.data!;
@@ -93,15 +100,21 @@ class _MyProfileState extends State<MyProfile> {
                         return ListTile(
                           title: Text(
                             bookmark['name'] ?? 'Unknown Challenge',
-                            style: const TextStyle(color: Colors.white),
+                            style: GoogleFonts.dotGothic16(
+                              color: Colors.white,
+                            ),
                           ),
                           subtitle: Text(
                             bookmark['category'] ?? 'Unknown Category',
-                            style: const TextStyle(color: Colors.white70),
+                            style: GoogleFonts.dotGothic16(
+                              color: Colors.white,
+                            ),
                           ),
                           trailing: Text(
                             '${bookmark['points'] ?? 0} Points',
-                            style: const TextStyle(color: Colors.white70),
+                            style: GoogleFonts.dotGothic16(
+                              color: Colors.white,
+                            ),
                           ),
                         );
                       },
@@ -128,12 +141,14 @@ class _MyProfileState extends State<MyProfile> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.logout, color: Colors.white),
+                    children: [
+                      const Icon(Icons.logout, color: Colors.white),
                       SizedBox(width: 8),
                       Text(
                         'Logout',
-                        style: TextStyle(color: Colors.white),
+                        style: GoogleFonts.dotGothic16(
+                          color: Colors.white,
+                        ),
                       ),
                     ],
                   ),
