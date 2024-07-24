@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -233,7 +234,7 @@ class _SolveScreenState extends State<SolveScreen> {
             if (_hint.isNotEmpty)
               Container(
                 padding: EdgeInsets.all(10),
-                color: Colors.grey[200],
+                color: const Color.fromARGB(255, 47, 47, 47),
                 child: Text(
                   _hint,
                   style: GoogleFonts.dotGothic16(),
