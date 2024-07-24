@@ -44,46 +44,26 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
     return false;
   }
 
+  Stream<List<Map<String, dynamic>>> _fetchChallenges() {
+    return _firestore.collection('challenges').snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        return {
+          'name': data['name'] ?? 'Unnamed',
+          'category': data['category'] ?? 'Uncategorized',
+          'points': data['points'] ?? 0,
+          'description': data['description'] ?? 'No description',
+          'difficulty': data['difficulty'] ?? 'No difficulty',
+        };
+      }).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-
     double imageWidth = screenWidth * 0.9;
     double imageHeight = imageWidth * (9 / 16);
-
-    final challenges = [
-      {
-        'name': 'Challenge 1',
-        'category': 'Forensics',
-        'points': 100,
-      },
-      {
-        'name': 'Challenge 2',
-        'category': 'Cryptography',
-        'points': 100,
-      },
-      {
-        'name': 'Challenge 3',
-        'category': 'Binary Exploitation',
-        'points': 100,
-      },
-      {
-        'name': 'Challenge 4',
-        'category': 'Cryptography',
-        'points': 200,
-      },
-      {
-        'name': 'Challenge 5',
-        'category': 'Reverse Engineering',
-        'points': 200,
-      },
-    ];
-
-    final filteredChallenges = selectedCategory == 'All'
-        ? challenges
-        : challenges
-            .where((challenge) => challenge['category'] == selectedCategory)
-            .toList();
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -115,9 +95,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(
-                  height: 40,
-                ),
+                const SizedBox(height: 40),
                 Text(
                   'Challenge Screen',
                   style: GoogleFonts.dotGothic16(
@@ -155,99 +133,119 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
                   },
                 ),
                 Expanded(
-                  child: GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      childAspectRatio: 1,
-                    ),
-                    itemCount: filteredChallenges.length,
-                    itemBuilder: (context, index) {
-                      final challenge = filteredChallenges[index];
-                      return FutureBuilder<bool>(
-                        future: _isBookmarked(challenge['name'] as String),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          }
-                          final isBookmarked = snapshot.data!;
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const SolveScreen(),
-                                  settings: RouteSettings(
-                                    arguments: {
-                                      'name': challenge['name'] as String,
-                                      'description': 'Challenge Description',
-                                      'difficulty': 'Challenge Difficulty',
-                                      'category':
-                                          challenge['category'] as String,
-                                      'points': challenge['points'] as int,
-                                    },
+                  child: StreamBuilder<List<Map<String, dynamic>>>(
+                    stream: _fetchChallenges(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      final challenges = snapshot.data!;
+                      final filteredChallenges = selectedCategory == 'All'
+                          ? challenges
+                          : challenges
+                              .where((challenge) =>
+                                  challenge['category'] == selectedCategory)
+                              .toList();
+
+                      return GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 1,
+                        ),
+                        itemCount: filteredChallenges.length,
+                        itemBuilder: (context, index) {
+                          final challenge = filteredChallenges[index];
+                          return FutureBuilder<bool>(
+                            future: _isBookmarked(challenge['name'] as String),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              }
+                              final isBookmarked = snapshot.data!;
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const SolveScreen(),
+                                      settings: RouteSettings(
+                                        arguments: {
+                                          'name': challenge['name'] as String,
+                                          'description':
+                                              challenge['description']
+                                                  as String,
+                                          'difficulty':
+                                              challenge['difficulty'] as String,
+                                          'category':
+                                              challenge['category'] as String,
+                                          'points': challenge['points'] as int,
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  width: imageWidth,
+                                  height: imageHeight,
+                                  decoration: BoxDecoration(
+                                    image: const DecorationImage(
+                                      image: AssetImage(
+                                          'assets/ChallengeBoxDesign.png'),
+                                      fit: BoxFit.fitWidth,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        challenge['name'] as String,
+                                        style: GoogleFonts.dotGothic16(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Text(
+                                        challenge['category'] as String,
+                                        style: GoogleFonts.dotGothic16(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Text(
+                                        '${challenge['points']} Points',
+                                        style: GoogleFonts.dotGothic16(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      IconButton(
+                                        icon: Icon(
+                                          isBookmarked
+                                              ? Icons.bookmark
+                                              : Icons.bookmark_border,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () {
+                                          _bookmarkChallenge(challenge);
+                                        },
+                                      ),
+                                    ],
                                   ),
                                 ),
                               );
                             },
-                            child: Container(
-                              width: imageWidth,
-                              height: imageHeight,
-                              decoration: BoxDecoration(
-                                image: const DecorationImage(
-                                  image: AssetImage(
-                                      'assets/ChallengeBoxDesign.png'),
-                                  fit: BoxFit.fitWidth,
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    challenge['name'] as String,
-                                    style: GoogleFonts.dotGothic16(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    challenge['category'] as String,
-                                    style: GoogleFonts.dotGothic16(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Text(
-                                    '${challenge['points']} Points',
-                                    style: GoogleFonts.dotGothic16(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  IconButton(
-                                    icon: Icon(
-                                      isBookmarked
-                                          ? Icons.bookmark
-                                          : Icons.bookmark_border,
-                                      color: Colors.white,
-                                    ),
-                                    onPressed: () {
-                                      _bookmarkChallenge(challenge);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
                           );
                         },
                       );

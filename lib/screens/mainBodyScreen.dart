@@ -2,8 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:login_registration/screens/challenge.dart';
 import 'package:login_registration/screens/screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:login_registration/screens/profile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MainBodyScreen extends StatefulWidget {
   const MainBodyScreen({super.key});
@@ -14,7 +16,6 @@ class MainBodyScreen extends StatefulWidget {
 
 class _MainBodyScreenState extends State<MainBodyScreen> {
   int currentIndex = 1;
-  int points = 100;
 
   final PageController _pageController = PageController(initialPage: 1);
 
@@ -23,6 +24,18 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
     const Homescreen(),
     const MyProfile(),
   ];
+
+  Future<int> _getPoints() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      return userDoc.data()?['points'] ?? 0;
+    }
+    return 0;
+  }
 
   void _onItemTapped(int index) {
     _pageController.animateToPage(
@@ -55,12 +68,31 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
           ),
           backgroundColor: Color.fromARGB(25, 183, 0, 255),
           elevation: 0,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const SizedBox(width: 40),
-              Text(
-                'POINTS: $points',
+          title: FutureBuilder<int>(
+            future: _getPoints(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Text(
+                  'POINTS: 0',
+                  style: GoogleFonts.dotGothic16(
+                    color: Colors.white,
+                    fontSize: 18,
+                    shadows: [
+                      Shadow(
+                        offset: const Offset(1.0, 1.0),
+                        color: Colors.black.withOpacity(1),
+                      ),
+                      Shadow(
+                        offset: const Offset(-1.0, -1.0),
+                        color: Colors.black.withOpacity(1),
+                      ),
+                    ],
+                  ),
+                  textAlign: TextAlign.center,
+                );
+              }
+              return Text(
+                'POINTS: ${snapshot.data}',
                 style: GoogleFonts.dotGothic16(
                   color: Colors.white,
                   fontSize: 18,
@@ -76,8 +108,8 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
                   ],
                 ),
                 textAlign: TextAlign.center,
-              ),
-            ],
+              );
+            },
           ),
         ),
         body: PageView(
