@@ -13,7 +13,6 @@ class MainBodyScreen extends StatefulWidget {
 }
 
 class _MainBodyScreenState extends State<MainBodyScreen> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   int currentIndex = 1;
   int points = 100;
 
@@ -34,12 +33,6 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
     setState(() {
       currentIndex = index;
     });
-  }
-
-  Future<void> _clearLoginInfo() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('email');
-    await prefs.remove('password');
   }
 
   @override
@@ -83,15 +76,6 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
                   ],
                 ),
                 textAlign: TextAlign.center,
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  await _auth.signOut();
-                  await _clearLoginInfo();
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                      '/', (Route<dynamic> route) => false);
-                },
-                child: const Icon(Icons.logout),
               ),
             ],
           ),
