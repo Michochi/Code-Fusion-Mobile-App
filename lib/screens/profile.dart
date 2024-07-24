@@ -117,8 +117,7 @@ class _MyProfileState extends State<MyProfile> {
                       '/', (Route<dynamic> route) => false);
                 },
                 child: Container(
-                  margin: const EdgeInsets.only(
-                      top: 10), // Add margin above the top border
+                  margin: const EdgeInsets.only(left: 15, right: 15),
                   decoration: const BoxDecoration(
                     border: Border(
                       top: BorderSide(color: Colors.white),
