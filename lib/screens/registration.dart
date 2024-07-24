@@ -61,6 +61,8 @@ class _MyRegistrationState extends State<MyRegistration> {
   String? _usernameValidator(String? username) {
     if (username == null || username.isEmpty) {
       return 'Please enter a username';
+    } else if (!RegExp(r'^.{3,18}$').hasMatch(username)) {
+      return 'username must be between 3 and 18 characters';
     }
     return null;
   }
