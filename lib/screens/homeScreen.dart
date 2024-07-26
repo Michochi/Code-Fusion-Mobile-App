@@ -55,9 +55,15 @@ class _HomescreenState extends State<Homescreen> {
                 ),
               ),
             ),
+            SizedBox(
+              height: 50,
+            ),
             Center(
               child: Column(
                 children: [
+                  SizedBox(
+                    height: 50,
+                  ),
                   Container(
                     margin: const EdgeInsets.all(16),
                     child: Image(

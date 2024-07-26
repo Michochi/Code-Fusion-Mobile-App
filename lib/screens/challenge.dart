@@ -95,7 +95,7 @@ class _ChallengeScreenState extends State<ChallengeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 40),
+                const SizedBox(height: 80),
                 Text(
                   'Challenge Screen',
                   style: GoogleFonts.dotGothic16(

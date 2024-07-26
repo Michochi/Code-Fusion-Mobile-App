@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:login_registration/screens/add.dart';
 import 'package:login_registration/screens/screen.dart';
 import 'firebase_options.dart';
 
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/',
       routes: {
-        '/': (context) => const LoginPage(),
+        '/': (context) => LoginPage(),
         '/signin': (context) => const MyRegistration(),
         '/profile': (context) => const MyProfile(),
         '/home': (context) => const Homescreen(),

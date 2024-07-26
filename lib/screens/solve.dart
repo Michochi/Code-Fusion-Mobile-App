@@ -97,10 +97,29 @@ class _SolveScreenState extends State<SolveScreen> {
     }
   }
 
-  void _showHint(int hintNumber) {
-    setState(() {
-      _hint = "Hint $hintNumber";
-    });
+  Future<void> _showHint(int hintNumber) async {
+    final challengeData =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final challengeName = challengeData['name'];
+
+    if (challengeName != null) {
+      final hintDoc = await FirebaseFirestore.instance
+          .collection('challenges')
+          .doc(challengeName)
+          .collection('hints')
+          .doc('hint$hintNumber')
+          .get();
+
+      if (hintDoc.exists) {
+        setState(() {
+          _hint = "Hint $hintNumber: ${hintDoc['hintText']}";
+        });
+      } else {
+        setState(() {
+          _hint = "Hint $hintNumber: No hint available";
+        });
+      }
+    }
   }
 
   @override
@@ -140,7 +159,7 @@ class _SolveScreenState extends State<SolveScreen> {
               ),
             ),
             SizedBox(height: 10),
-            Text(
+            SelectableText(
               'Description: $description',
               style: GoogleFonts.dotGothic16(
                 color: Colors.white,
@@ -231,14 +250,14 @@ class _SolveScreenState extends State<SolveScreen> {
                 );
               }),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             if (_hint.isNotEmpty)
               Container(
                 padding: EdgeInsets.all(10),
                 color: const Color.fromARGB(255, 47, 47, 47),
                 child: Text(
                   _hint,
-                  style: GoogleFonts.dotGothic16(),
+                  style: GoogleFonts.dotGothic16(color: Colors.white),
                 ),
               ),
           ],

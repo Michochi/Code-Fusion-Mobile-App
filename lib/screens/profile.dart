@@ -93,6 +93,9 @@ class _MyProfileState extends State<MyProfile> {
           ),
           Column(
             children: [
+              SizedBox(
+                height: 50,
+              ),
               Container(
                 margin: const EdgeInsets.only(top: 50),
                 child: Text(

@@ -66,7 +66,7 @@ class _MainBodyScreenState extends State<MainBodyScreen> {
             padding: EdgeInsets.all(9.0),
             child: Image(image: AssetImage("assets/logocode.png")),
           ),
-          backgroundColor: Color.fromARGB(25, 183, 0, 255),
+          backgroundColor: Color.fromARGB(100, 153, 0, 255),
           elevation: 0,
           title: FutureBuilder<int>(
             future: _getPoints(),

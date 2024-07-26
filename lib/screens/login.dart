@@ -17,6 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   final key = GlobalKey<FormState>();
   final FirebaseAuth _authentication = FirebaseAuth.instance;
   String? errorMessage = '';
+  bool rememberMe = false;
 
   @override
   void initState() {
@@ -51,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       await _authentication.signInWithEmailAndPassword(
           email: email, password: password);
-      if (!autoLogin) {
+      if (!autoLogin && rememberMe) {
         await _saveLoginInfo(email, password);
       }
       ScaffoldMessenger.of(context).showSnackBar(
@@ -366,6 +367,26 @@ class _LoginPageState extends State<LoginPage> {
                                 obscureText: true,
                                 controller: passwordController,
                                 validator: passwordValidator,
+                              ),
+                              const SizedBox(height: 20),
+                              Row(
+                                children: [
+                                  Checkbox(
+                                    value: rememberMe,
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        rememberMe = value!;
+                                      });
+                                    },
+                                    checkColor: Colors.white,
+                                    activeColor:
+                                        const Color.fromARGB(255, 145, 37, 218),
+                                  ),
+                                  const Text(
+                                    'Remember Me',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ],
                               ),
                               const SizedBox(height: 20),
                               TextButton(
